@@ -24,18 +24,42 @@ class HelloWorld(Resource):
 
 class TodoSimple(Resource):
     """
-    CRUD sencillo para crear API REST
+    CRUD sencillo para crear API REST mediante un ID
     Para más información sobre flask-restful consulte https://flask-restful.readthedocs.io/en/latest/
-    TODO: Implementar el método GET para obtener mediante el ID
-        GET {{host}}/todos/<int:id>
     TODO: Implementar el método PUT para actualizar una entidad completa mediante su ID
         PUT {{host}}/todos/<int:id>
     TODO: Implementar el método DELETE para elimintar una entidad completa mediante su ID
         DELETE {{host}}/todos/<int:id>
     """
+    def get(self, id):
+        """
+        Esta función pretende buscar un elemento en particular de la lista de TODO's mediante su ID
+            Debemos rescatar el id de la petición
+            Buscar ese id en el atributo id de cada objeto de la lista de elementos
+            Si encuentro la entidad que tenga el mismo ID, le regreso al cliente
+            Si no lo encuentro, regresamos el mensaje de no encontrado
+        """
+        # Buscar en la lista de objetos
+        # Itera cada elemento y si encuentras el ID, lo regresas
+        # for item in todo_list:
+        #     if item["id"] == id:
+        #         return item
+        
+        found_todo = next((item for item in todo_list if item["id"] == id), None)
+        
+        if found_todo is None:
+            return {'message': "No se encontro el TODO con id: " + str(id)}
+        
+        return found_todo
+
+
+class TodoSimpleList(Resource):
+    """
+    Recurso para gestionar peticiones genéricas y adición de entidades 
+    """
     def get(self):
         return {'data': todo_list}
-
+    
     def post(self):
         # Parser
         # Doc: https://flask-restful.readthedocs.io/en/latest/reqparse.html
@@ -55,7 +79,8 @@ class TodoSimple(Resource):
 
 
 api.add_resource(HelloWorld, '/')
-api.add_resource(TodoSimple, '/todos/')
+api.add_resource(TodoSimpleList, '/todos/')
+api.add_resource(TodoSimple, '/todos/<int:id>/')
 
 if __name__ == '__main__':
     app.run(debug=True)
