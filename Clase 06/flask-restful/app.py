@@ -4,13 +4,13 @@ from flask_restful import Resource, Api, reqparse
 app = Flask(__name__)
 api = Api(app)
 
-todo_list = [
+todo_list = [  # [0,1,2,3...]
     {
-        "id": 1,
+        "id": 1,  # Posicion 0
         "value": "Finish mi TODO app"
     },
     {
-        "id": 2,
+        "id": 2, # Posicion 1
         "value": "Add a POST method to my TODO app"
     }
 ]
@@ -50,6 +50,35 @@ class TodoSimple(Resource):
         if found_todo is None:
             return {'message': "No se encontro el TODO con id: " + str(id)}
         
+        return found_todo
+    
+    def put(self, id):
+        """
+        Debe buscar la entidad a actualizar en la lista de todos mediante el ID,
+        Actualizar el elemento en la lista
+        Finalmente, lo regresa al cliente.
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument('value', type=str, help='El campo "value" es obligatorio', required=True)
+        args = parser.parse_args()
+
+        found_todo = next((item for item in todo_list if item["id"] == id), None)  # Copia del todo
+        
+        if found_todo is None:
+            return {'message': "No se encontro el TODO con id: " + str(id)}
+        
+        # Actualizamos el todo
+        found_todo["value"] = args.get("value")
+
+        # Actualizamos el elemento todo en la lista, el count es el índice de la lista
+        i = 0  # 2
+        for item in todo_list:
+            if item["id"] == id:
+                break
+            i += 1
+        
+        todo_list[i] = found_todo
+
         return found_todo
 
 
