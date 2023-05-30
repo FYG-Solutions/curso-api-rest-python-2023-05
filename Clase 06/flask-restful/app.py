@@ -86,6 +86,7 @@ class TodoSimpleList(Resource):
     """
     Recurso para gestionar peticiones genéricas y adición de entidades 
     """
+
     def get(self):
         return {'data': todo_list}
     
@@ -102,9 +103,10 @@ class TodoSimpleList(Resource):
         value = args.get('value')
         # Creamos el elemento y lo agregamos al todo-list
         new_item =  {"id":id, "value":value}
-        # TODO: Agregar una validación para que sólo existan id's únicos
-        todo_list.append(new_item)
-        return new_item
+        found_todo = next((item for item in todo_list if item["id"] == id), None)  # Copia del todo
+        if found_todo is None:
+            todo_list.append(new_item)
+        return {"message": "El id ya existe"}
 
 
 api.add_resource(HelloWorld, '/')
