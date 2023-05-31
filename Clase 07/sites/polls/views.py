@@ -11,7 +11,6 @@ from polls.models import Question
 def index(request):
     return HttpResponse("Hola! Estás en el index de polls.")
 
-@csrf_exempt
 def questions(request):
     if request.method == "GET":
         # Serializa la lista de objectos en un Json
