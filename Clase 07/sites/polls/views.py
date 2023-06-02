@@ -15,7 +15,7 @@ def index(request):
 def questions(request):
     if request.method == "GET":
         # Serializa la lista de objectos en un Json
-        questions = Question.objects.all()
+        questions = Question.objects.all()  # Lista de registros
         data = serializers.serialize("json", questions)
         parsed_data = json.loads(data)
         return JsonResponse(parsed_data, safe=False)
@@ -36,7 +36,7 @@ def questions(request):
 def question_detail(request, pk):
     if request.method == "GET":
         try:
-            question = Question.objects.get(pk=pk)
+            question = Question.objects.get(pk=pk)  # Sólo un elemento
             data = serializers.serialize('json', [question])
             parsed_data = json.loads(data)
             return JsonResponse(parsed_data, safe=False)
